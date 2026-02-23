@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install -g openclaw
+      # - run: npm install -g openclaw
       - run: npm install nodemailer node-fetch dotenv
 
       # 从 Secrets 生成 .env
@@ -35,7 +35,7 @@ jobs:
       - name: Run OpenClaw
         run: |
           export $(cat .env | xargs)
-          openclaw run-task task.txt > output.md
+          npx openclaw run-task task.txt > output.md
 
       - name: Send
         run: |
