@@ -8,21 +8,21 @@ const content = fs.readFileSync("output.md", "utf8");
 // EMAIL
 async function sendEmail() {
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
         }
     });
 
     await transporter.sendMail({
-        from: process.env.EMAIL_USER,
+        from: "OpenClaw Bot <bot@test.local>",
         to: process.env.EMAIL_TO,
         subject: "☀️ 今日早安简报",
         text: content
     });
 }
-
 // DISCORD
 async function sendDiscord() {
     await fetch(process.env.DISCORD_WEBHOOK, {
