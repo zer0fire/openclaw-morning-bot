@@ -23,6 +23,22 @@ jobs:
         run: |
           npm install openclaw nodemailer node-fetch dotenv
 
+      - name: Setup OpenClaw auth
+        run: |
+          mkdir -p ~/.openclaw/agents/main/agent
+          cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
+          {
+            "default": {
+              "provider": "openrouter",
+              "apiKey": "${OPENROUTER_API_KEY}",
+              "baseURL": "https://openrouter.ai/api/v1",
+              "model": "arcee-ai/trinity-large-preview:free"
+            }
+          }
+          EOF
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
       # 从 Secrets 生成 .env
       - name: Create .env
         run: |

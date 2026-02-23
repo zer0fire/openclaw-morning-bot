@@ -1,0 +1,8 @@
+{
+    "default": {
+        "provider": "openrouter",
+        "apiKey": "${OPENROUTER_API_KEY}",
+        "baseURL": "https://openrouter.ai/api/v1",
+        "model": "arcee-ai/trinity-large-preview:free"
+    }
+}
