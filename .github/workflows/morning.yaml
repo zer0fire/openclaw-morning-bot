@@ -39,7 +39,7 @@ jobs:
       - name: Run OpenClaw
         run: |
           export $(cat .env | xargs)
-          npx openclaw run-task task.txt > output.md
+          npx -y openclaw@latest run-task task.txt > output.md
 
       - name: Show npm debug log
         if: failure()
