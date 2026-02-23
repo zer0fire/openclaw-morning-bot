@@ -28,12 +28,16 @@ jobs:
           mkdir -p ~/.openclaw/agents/main/agent
           cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
           {
-            "default": {
-              "provider": "openrouter",
-              "apiKey": "${OPENROUTER_API_KEY}",
-              "baseURL": "https://openrouter.ai/api/v1",
-              "model": "arcee-ai/trinity-large-preview:free"
-            }
+            "profiles": [
+              {
+                "id": "default",
+                "provider": "openrouter",
+                "apiKey": "${OPENROUTER_API_KEY}",
+                "baseURL": "https://openrouter.ai/api/v1",
+                "model": "arcee-ai/trinity-large-preview:free"
+              }
+            ],
+            "activeProfileId": "default"
           }
           EOF
         env:
