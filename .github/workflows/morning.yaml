@@ -1,0 +1,41 @@
+name: Morning Briefing
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+jobs:
+  morning:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install -g openclaw
+      - run: npm install nodemailer node-fetch dotenv
+
+      # 从 Secrets 生成 .env
+      - name: Create .env
+        run: |
+          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> .env
+          echo "OPENROUTER_MODEL=${{ secrets.OPENROUTER_MODEL }}" >> .env
+          echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+          echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> .env
+          echo "EMAIL_TO=${{ secrets.EMAIL_TO }}" >> .env
+          echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> .env
+
+      # 加载 .env 运行 OpenClaw
+      - name: Run OpenClaw
+        run: |
+          export $(cat .env | xargs)
+          openclaw run-task task.txt > output.md
+
+      - name: Send
+        run: |
+          export $(cat .env | xargs)
+          node send.js
