@@ -16,8 +16,9 @@ jobs:
         with:
           node-version: 20
 
-      # - run: npm install -g openclaw
-      - run: npm install nodemailer node-fetch dotenv
+      - name: Install deps
+        run: |
+          npm install openclaw nodemailer node-fetch dotenv
 
       # 从 Secrets 生成 .env
       - name: Create .env
