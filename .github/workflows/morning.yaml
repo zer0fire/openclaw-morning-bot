@@ -43,24 +43,52 @@ jobs:
       #   env:
       #     OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
+      # - name: Setup OpenClaw auth
+      #   run: |
+      #     mkdir -p ~/.openclaw/agents/main/agent
+      #     echo "$AUTH_JSON" > ~/.openclaw/agents/main/agent/auth-profiles.json
+      #   env:
+      #     AUTH_JSON: |
+      #       {
+      #         "profiles": [
+      #           {
+      #             "id": "openrouter",
+      #             "provider": "openrouter",
+      #             "apiKey": "${{ secrets.OPENROUTER_API_KEY }}",
+      #             "baseURL": "https://openrouter.ai/api/v1",
+      #             "model": "arcee-ai/trinity-large-preview:free"
+      #           }
+      #         ],
+      #         "activeProfileId": "openrouter"
+      #       }
+
       - name: Setup OpenClaw auth
         run: |
           mkdir -p ~/.openclaw/agents/main/agent
-          echo "$AUTH_JSON" > ~/.openclaw/agents/main/agent/auth-profiles.json
+          cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
+          {
+              "profiles": {
+                  "openrouter": {
+                      "apiKey": "${OPENROUTER_API_KEY}",
+                      "baseURL": "https://openrouter.ai/api/v1",
+                      "model": "arcee-ai/trinity-large-preview:free"
+                  }
+              },
+              "activeProfileId": "openrouter",
+              "env": {
+                  "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+              },
+              "agents": {
+                  "defaults": {
+                      "model": {
+                          "primary": "openrouter/arcee-ai/trinity-large-preview:free"
+                      }
+                  }
+              }
+          }
+          EOF
         env:
-          AUTH_JSON: |
-            {
-              "profiles": [
-                {
-                  "id": "openrouter",
-                  "provider": "openrouter",
-                  "apiKey": "${{ secrets.OPENROUTER_API_KEY }}",
-                  "baseURL": "https://openrouter.ai/api/v1",
-                  "model": "arcee-ai/trinity-large-preview:free"
-                }
-              ],
-              "activeProfileId": "openrouter"
-            }
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       # 从 Secrets 生成 .env
       - name: Create .env
