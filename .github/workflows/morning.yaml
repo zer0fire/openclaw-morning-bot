@@ -23,44 +23,42 @@ jobs:
         run: |
           npm install openclaw nodemailer node-fetch dotenv
 
-      # - name: Setup OpenClaw auth
-      #   run: |
-      #     mkdir -p ~/.openclaw/agents/main/agent
-      #     cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
-      #     {
-      #       "profiles": [
-      #         {
-      #           "id": "default",
-      #           "provider": "openrouter",
-      #           "apiKey": "${OPENROUTER_API_KEY}",
-      #           "baseURL": "https://openrouter.ai/api/v1",
-      #           "model": "arcee-ai/trinity-large-preview:free"
-      #         }
-      #       ],
-      #       "activeProfileId": "default"
-      #     }
-      #     EOF
-      #   env:
-      #     OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      - name: Setup OpenClaw auth
+        run: |
+          npx openclaw agents add testopenrouter --workspace ~/.openclaw/agents/testopenrouter/agent --model arcee-ai/trinity-large-preview:free --non-interactive --json
+          mkdir -p ~/.openclaw/agents/testopenrouter/agent
+          cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
+          {
+            "version": 1,
+            "profiles": {
+              "openrouter:default": {
+                "type": "api_key",
+                "provider": "openrouter",
+                "key": "${OPENROUTER_API_KEY}"
+              }
+            },
+            "lastGood": {
+              "openrouter": "openrouter:default"
+            },
+            "usageStats": {
+              "openrouter:default": {
+                "lastUsed": 1772466938469,
+                "errorCount": 0
+              }
+            }
+          }
+          EOF
+          cat > ~/.openclaw/agents/main/agent/auth.json <<EOF
+          {
+            "openrouter": {
+              "type": "api_key",
+              "key": "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"
+            }
+          }
 
-      # - name: Setup OpenClaw auth
-      #   run: |
-      #     mkdir -p ~/.openclaw/agents/main/agent
-      #     echo "$AUTH_JSON" > ~/.openclaw/agents/main/agent/auth-profiles.json
-      #   env:
-      #     AUTH_JSON: |
-      #       {
-      #         "profiles": [
-      #           {
-      #             "id": "openrouter",
-      #             "provider": "openrouter",
-      #             "apiKey": "${{ secrets.OPENROUTER_API_KEY }}",
-      #             "baseURL": "https://openrouter.ai/api/v1",
-      #             "model": "arcee-ai/trinity-large-preview:free"
-      #           }
-      #         ],
-      #         "activeProfileId": "openrouter"
-      #       }
+          EOF
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       - name: Setup OpenClaw auth
         run: |

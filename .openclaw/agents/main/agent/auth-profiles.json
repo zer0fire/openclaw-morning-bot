@@ -1,12 +1,19 @@
 {
-    "profiles": [
-        {
-            "id": "default",
+    "version": 1,
+    "profiles": {
+        "openrouter:default": {
+            "type": "api_key",
             "provider": "openrouter",
-            "apiKey": "${OPENROUTER_API_KEY}",
-            "baseURL": "https://openrouter.ai/api/v1",
-            "model": "arcee-ai/trinity-large-preview:free"
+            "key": "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"
         }
-    ],
-    "activeProfileId": "default"
+    },
+    "lastGood": {
+        "openrouter": "openrouter:default"
+    },
+    "usageStats": {
+        "openrouter:default": {
+            "lastUsed": 1772466787542,
+            "errorCount": 0
+        }
+    }
 }

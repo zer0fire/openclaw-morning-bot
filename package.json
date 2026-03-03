@@ -5,12 +5,14 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "open-claw": "cross-env OPENROUTER_API_KEY=${OPENROUTER_API_KEY} npx -y openclaw agent --agent main -m \"$(cat task.txt)\""
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "cross-env": "^10.1.0",
         "dotenv": "^17.3.1",
         "node-fetch": "^3.3.2",
         "nodemailer": "^8.0.1",
