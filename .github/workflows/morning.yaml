@@ -30,9 +30,7 @@ jobs:
             --model openrouter/arcee-ai/trinity-large-preview:free \
             --workspace ~/.openclaw/agents/main/agent \
             --non-interactive
-
           mkdir -p ~/.openclaw/agents/main/agent
-
           cat > ~/.openclaw/agents/main/agent/auth.json <<EOF
           {
             "openrouter": {
