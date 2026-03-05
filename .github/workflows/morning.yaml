@@ -28,8 +28,20 @@ jobs:
         run: |
           openclaw agents add main \
             --model openrouter/arcee-ai/trinity-large-preview:free \
-            --api-key $OPENROUTER_API_KEY \
+            --workspace ~/.openclaw/agents/main/agent \
             --non-interactive
+
+          mkdir -p ~/.openclaw/agents/main/agent
+
+          cat > ~/.openclaw/agents/main/agent/auth.json <<EOF
+          {
+            "openrouter": {
+              "type": "api_key",
+              "key": "${OPENROUTER_API_KEY}",
+              "baseURL": "https://openrouter.ai/api/v1"
+            }
+          }
+          EOF
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
