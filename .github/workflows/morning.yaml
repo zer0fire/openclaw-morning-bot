@@ -26,12 +26,12 @@ jobs:
       # 创建 agent 并配置 openrouter
       - name: Setup OpenClaw agent
         run: |
-          openclaw agents add main \
+          openclaw agents add testopenrouter \
             --model openrouter/arcee-ai/trinity-large-preview:free \
-            --workspace ~/.openclaw/agents/main/agent \
-            --non-interactive
-          mkdir -p ~/.openclaw/agents/main/agent
-          cat > ~/.openclaw/agents/main/agent/auth.json <<EOF
+            --workspace ~/.openclaw/agents/testopenrouter/agent \
+            --non-interactive 
+          mkdir -p ~/.openclaw/agents/testopenrouter/agent
+          cat > ~/.openclaw/agents/testopenrouter/agent/auth.json <<EOF
           {
             "openrouter": {
               "type": "api_key",
@@ -57,7 +57,7 @@ jobs:
       - name: Run OpenClaw
         run: |
           MESSAGE="$(cat task.txt)"
-          openclaw agent --agent main -m "$MESSAGE" > output.md
+          openclaw agent --agent testopenrouter -m "$MESSAGE" > output.md
 
       - name: Show npm debug log
         if: failure()
