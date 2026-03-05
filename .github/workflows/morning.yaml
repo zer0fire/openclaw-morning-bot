@@ -21,78 +21,22 @@ jobs:
 
       - name: Install deps
         run: |
-          npm install openclaw nodemailer node-fetch dotenv
+          npm install nodemailer node-fetch dotenv
 
-      - name: Setup OpenClaw auth
+      # 创建 agent 并配置 openrouter
+      - name: Setup OpenClaw agent
         run: |
-          npx openclaw agents add testopenrouter --workspace ~/.openclaw/agents/testopenrouter/agent --model arcee-ai/trinity-large-preview:free --non-interactive --json
-          mkdir -p ~/.openclaw/agents/testopenrouter/agent
-          cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
-          {
-            "version": 1,
-            "profiles": {
-              "openrouter:default": {
-                "type": "api_key",
-                "provider": "openrouter",
-                "key": "${OPENROUTER_API_KEY}"
-              }
-            },
-            "lastGood": {
-              "openrouter": "openrouter:default"
-            },
-            "usageStats": {
-              "openrouter:default": {
-                "lastUsed": 1772466938469,
-                "errorCount": 0
-              }
-            }
-          }
-          EOF
-          cat > ~/.openclaw/agents/main/agent/auth.json <<EOF
-          {
-            "openrouter": {
-              "type": "api_key",
-              "key": "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"
-            }
-          }
-
-          EOF
-        env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-
-      - name: Setup OpenClaw auth
-        run: |
-          mkdir -p ~/.openclaw/agents/main/agent
-          cat > ~/.openclaw/agents/main/agent/auth-profiles.json <<EOF
-          {
-              "profiles": {
-                  "openrouter": {
-                      "apiKey": "${OPENROUTER_API_KEY}",
-                      "baseURL": "https://openrouter.ai/api/v1",
-                      "model": "arcee-ai/trinity-large-preview:free"
-                  }
-              },
-              "activeProfileId": "openrouter",
-              "env": {
-                  "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
-              },
-              "agents": {
-                  "defaults": {
-                      "model": {
-                          "primary": "openrouter/arcee-ai/trinity-large-preview:free"
-                      }
-                  }
-              }
-          }
-          EOF
+          openclaw agents add main \
+            --provider openrouter \
+            --model arcee-ai/trinity-large-preview:free \
+            --api-key $OPENROUTER_API_KEY \
+            --non-interactive
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       # 从 Secrets 生成 .env
       - name: Create .env
         run: |
-          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> .env
-          echo "OPENROUTER_MODEL=${{ secrets.OPENROUTER_MODEL }}" >> .env
           echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
           echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env
           echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
@@ -100,12 +44,11 @@ jobs:
           echo "EMAIL_TO=${{ secrets.EMAIL_TO }}" >> .env
           echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> .env
 
-      # 加载 .env 运行 OpenClaw
+      # 运行 OpenClaw
       - name: Run OpenClaw
         run: |
-          export $(cat .env | xargs)
           MESSAGE="$(cat task.txt)"
-          npx -y openclaw agent --agent main -m "$MESSAGE" > output.md
+          openclaw agent --agent main -m "$MESSAGE" > output.md
 
       - name: Show npm debug log
         if: failure()
