@@ -69,4 +69,4 @@ jobs:
       - name: Send
         run: |
           export $(cat .env | xargs)
-          node send.js
+          node ./send.js
